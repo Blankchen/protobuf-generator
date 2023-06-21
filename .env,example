@@ -1,0 +1,3 @@
+# rename to .env then update the SQL remove limit
+ASSISTOR_CONFIG_URL=""
+SQL=""
