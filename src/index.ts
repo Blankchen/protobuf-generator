@@ -2,53 +2,14 @@
 import { createClient } from "@clickhouse/client";
 import fetch from "node-fetch";
 import * as dotenv from "dotenv";
-dotenv.config({ path: __dirname + "/.env" });
+import { upperCase } from "./utils";
+dotenv.config();
 
-type DBConfig = {
-  db: string;
-  host: string;
-  password: string;
-  username: string;
-};
-
-type EnvConfigResponse = {
-  code: number;
-  data: {
-    Result: string;
-  };
-};
-
-export interface Dataset {
-  meta?: MetaEntity[] | null;
-  data?: DataEntity[] | null;
-  rows: number;
-  rows_before_limit_at_least: number;
-  statistics: Statistics;
-}
-export interface MetaEntity {
-  name: string;
-  type: string;
-}
-export interface DataEntity {
-  id: string;
-  from_uid: number;
-  to_uid: number;
-  clubid: string;
-  action_type: string;
-  action_time: string;
-  attach: string;
-  leagueid: string;
-  ds: number;
-}
-export interface Statistics {
-  elapsed: number;
-  rows_read: number;
-  bytes_read: number;
-}
 
 async function getConfig() {
   try {
     const url = process.env.ASSISTOR_CONFIG_URL || ""
+    console.log("url", url)
     const response = await fetch(
       url,
       {
@@ -68,21 +29,6 @@ async function getConfig() {
   } catch (error) {
     console.log("error message: ", error);
   }
-}
-
-function upperCase(text: string) {
-  let result = "";
-  for (let i = 0; i < text.length; i++) {
-    if (i === 0) {
-      result += text[i].toLocaleUpperCase();
-    } else if (text[i] === "_") {
-      result += text[i + 1].toLocaleUpperCase();
-      i++;
-    } else {
-      result += text[i];
-    }
-  }
-  return result;
 }
 
 async function main() {
@@ -108,7 +54,7 @@ async function main() {
 
   // console.log('dataset meta', dataset.meta)
 
-  let text = `message ProtoBufName {
+  let text = `message XXXXXXXXListRow {
 `;
   dataset.meta?.forEach((x, idx) => {
     text += `  // @gotags: json:"${x.name}"
