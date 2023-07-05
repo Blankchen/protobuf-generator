@@ -45,4 +45,13 @@ declare global {
     rows_read: number;
     bytes_read: number;
   }
+
+  interface MysqlColumns {
+    Field: string;
+    Type: string;
+    Null: string;
+    Key: string;
+    Default: string;
+    Extra: string;
+  }
 }

@@ -1,3 +1,6 @@
+/**
+ * string array to protobuff
+ */
 import { upperCase } from "./utils";
 const arr = [
   'uid',

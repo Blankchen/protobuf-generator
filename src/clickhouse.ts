@@ -1,38 +1,14 @@
+/**
+ * clickhouse sql to protobuff
+ */
 // clickhouse: https://clickhouse.com/docs/en/integrations/language-clients/nodejs
 import { createClient } from "@clickhouse/client";
-import fetch from "node-fetch";
 import * as dotenv from "dotenv";
-import { upperCase } from "./utils";
+import { upperCase, getConfig } from "./utils";
 dotenv.config();
 
-
-async function getConfig() {
-  try {
-    const url = process.env.ASSISTOR_CONFIG_URL || ""
-    console.log("url", url)
-    const response = await fetch(
-      url,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Error! status: ${response.status}`);
-    }
-    // 👇️ const result:
-    const result = (await response.json()) as EnvConfigResponse;
-    return result;
-  } catch (error) {
-    console.log("error message: ", error);
-  }
-}
-
 async function main() {
-  const result = await getConfig();
+  const result = await getConfig('clickhouse.m1_clickhouse_kkpoker');
   const config: DBConfig = result?.data?.Result
     ? JSON.parse(result.data.Result)
     : {};
@@ -56,7 +32,7 @@ async function main() {
 
   let text = `message XXXXXXXXListRow {
 `;
-  dataset.meta?.forEach((x, idx) => {
+  dataset.meta?.forEach((x: any, idx: any) => {
     text += `  // @gotags: json:"${x.name}"
   ${x.type.toLocaleLowerCase()} ${upperCase(x.name)} = ${idx + 1
       } [json_name = "${x.name}"];
